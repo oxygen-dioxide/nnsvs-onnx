@@ -1,0 +1,47 @@
+%YAML 1.2
+---
+symbols:
+  - {symbol: "N", type: vowel}
+  - {symbol: a, type: vowel}
+  - {symbol: b, type: stop}
+  - {symbol: br, type: vowel}
+  - {symbol: by, type: stop}
+  - {symbol: ch, type: affricate}
+  - {symbol: cl, type: vowel}
+  - {symbol: d, type: stop}
+  - {symbol: dy, type: stop}
+  - {symbol: e, type: vowel}
+  - {symbol: f, type: fricative}
+  - {symbol: fy, type: fricative}
+  - {symbol: g, type: stop}
+  - {symbol: gy, type: stop}
+  - {symbol: h, type: aspirate}
+  - {symbol: hy, type: aspirate}
+  - {symbol: i, type: vowel}
+  - {symbol: j, type: affricate}
+  - {symbol: k, type: stop}
+  - {symbol: ky, type: stop}
+  - {symbol: m, type: nasal}
+  - {symbol: my, type: nasal}
+  - {symbol: "n", type: nasal}
+  - {symbol: ny, type: nasal}
+  - {symbol: o, type: vowel}
+  - {symbol: p, type: stop}
+  - {symbol: pau, type: vowel}
+  - {symbol: py, type: stop}
+  - {symbol: r, type: liquid}
+  - {symbol: ry, type: liquid}
+  - {symbol: s, type: fricative}
+  - {symbol: sh, type: fricative}
+  - {symbol: sil, type: vowel}
+  - {symbol: t, type: stop}
+  - {symbol: ts, type: affricate}
+  - {symbol: ty, type: stop}
+  - {symbol: u, type: vowel}
+  - {symbol: v, type: fricative}
+  - {symbol: w, type: semivowel}
+  - {symbol: "y", type: semivowel}
+  - {symbol: z, type: fricative}
+  - {symbol: GlottalStop, type: vowel}
+  - {symbol: Edge, type: stop}
+entries: []
