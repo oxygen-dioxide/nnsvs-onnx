@@ -16,12 +16,16 @@ from omegaconf import DictConfig, OmegaConf
 import sklearn
 import torch
 from typing import List,Dict
+import nnsvs
+from nnsvs.base import PredictionType
+
+modeltype = None
 
 def to_one_hot(tensor, n, fill_with=1.0, lengths=None):
     # we perform one hot encore with respect to the last axis
-    if(lengths==None):
+    if(lengths == None):
         one_hot = torch.FloatTensor(tensor.size() + torch.Size((n,))).zero_()
-    else:
+    elif(modeltype == nnsvs.model.RMDN):
         one_hot = torch.zeros(
             (
                 1,
@@ -29,6 +33,17 @@ def to_one_hot(tensor, n, fill_with=1.0, lengths=None):
                 n.item()
             ),
             dtype=torch.float)
+    elif(modeltype == nnsvs.model.MDNv2):
+        one_hot = torch.zeros(
+            (
+                1,
+                lengths.squeeze(),
+                1,
+                n.item()
+            ),
+            dtype=torch.float)
+    else:
+        raise Exception("Model type not supported")
     if tensor.is_cuda:
         one_hot = one_hot.cuda()
     one_hot.scatter_(len(tensor.size()), tensor.unsqueeze(-1), fill_with)
@@ -83,31 +98,48 @@ def export_model(config:DictConfig, typ:str ,device:str="cpu"):
     
     model.eval()
     
-    model_wrapper = ModelWrapper(model)
+    #dummy input
     question_path = to_absolute_path(config.question_path)
     binary_dict, numeric_dict = \
         hts.load_question_set(question_path, append_hat_for_LL=False)
-    
-    #dummy input
     dim = len(binary_dict)+len(numeric_dict)
     dummy_input = torch.from_numpy(numpy.zeros((1,1,dim))).float().to(device)
     lengths = torch.from_numpy(numpy.array([dummy_input.shape[1]],dtype=numpy.int64))
     input_tuple = (dummy_input, lengths)
     
-    #export onnx
-    torch.onnx.export(
-        model_wrapper, 
-        input_tuple,
-        onnx_path, 
-        input_names=["linguistic_features","lengths"], 
-        output_names=["max_mu","max_sigma"], 
-        dynamic_axes={
-            'linguistic_features':{1:'n_phonemes'}, 
-            'output1':{1:'n_phonemes'},
-            'output2':{1:'n_phonemes'}
-            }  
-        )
-    print(f'{datetime.now()} : exported {onnx_path}')
+    if model.prediction_type() == PredictionType.PROBABILISTIC:
+        global modeltype
+        modeltype = type(model)
+        model_wrapper = ModelWrapper(model)
+        
+        #export onnx
+        torch.onnx.export(
+            model_wrapper, 
+            input_tuple,
+            onnx_path, 
+            input_names=["linguistic_features","lengths"], 
+            output_names=["max_mu","max_sigma"], 
+            dynamic_axes={
+                'linguistic_features':{1:'n_phonemes'}, 
+                'max_mu':{1:'n_phonemes'},
+                'max_sigma':{1:'n_phonemes'}
+                }  
+            )
+        
+            
+    else:
+        torch.onnx.export(
+            model, 
+            input_tuple,
+            onnx_path, 
+            input_names=["linguistic_features","lengths"], 
+            output_names=["result"], 
+            dynamic_axes={
+                'linguistic_features':{1:'n_phonemes'}, 
+                'result':{1:'n_phonemes'}
+                }  
+            )
+        print(f'{datetime.now()} : exported {onnx_path}')
 
 def export_minmaxscaler(path:str,encoding:str="utf8"):
     #export MinMaxScaler to json, which is c#-readable
