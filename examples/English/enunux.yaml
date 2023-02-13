@@ -49,3 +49,9 @@ symbols:
 entries:
   - grapheme: openutau
     phonemes: [ow, p, eh, n, w, uw, t, ah, w, uw]
+    
+redirections: 
+  - from: [pau]
+    to: SP
+  - from: [br]
+    to: AP
