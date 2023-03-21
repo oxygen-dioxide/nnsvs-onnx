@@ -22,7 +22,7 @@ symbols:
 - {symbol: k, type: stop}
 - {symbol: l, type: liquid}
 - {symbol: m, type: nasal}
-- {symbol: n, type: nasal}
+- {symbol: "n", type: nasal}
 - {symbol: ng, type: nasal}
 - {symbol: ow, type: vowel}
 - {symbol: oy, type: vowel}
@@ -36,7 +36,7 @@ symbols:
 - {symbol: uw, type: vowel}
 - {symbol: v, type: fricative}
 - {symbol: w, type: semivowel}
-- {symbol: y, type: semivowel}
+- {symbol: "y", type: semivowel}
 - {symbol: z, type: fricative}
 - {symbol: zh, type: fricative}
 #custom symbols
