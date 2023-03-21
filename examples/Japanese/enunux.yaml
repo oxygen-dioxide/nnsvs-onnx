@@ -45,3 +45,8 @@ symbols:
   - {symbol: GlottalStop, type: vowel}
   - {symbol: Edge, type: stop}
 entries: []
+redirections: 
+  - from: [pau]
+    to: SP
+  - from: [br]
+    to: AP
