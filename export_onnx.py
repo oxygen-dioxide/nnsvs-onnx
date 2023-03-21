@@ -25,7 +25,7 @@ def to_one_hot(tensor, n, fill_with=1.0, lengths=None):
     # we perform one hot encore with respect to the last axis
     if(lengths == None):
         one_hot = torch.FloatTensor(tensor.size() + torch.Size((n,))).zero_()
-    elif(modeltype == nnsvs.model.RMDN):
+    elif(len(tensor.size()) == 2):
         one_hot = torch.zeros(
             (
                 1,
@@ -33,7 +33,7 @@ def to_one_hot(tensor, n, fill_with=1.0, lengths=None):
                 n.item()
             ),
             dtype=torch.float)
-    elif(modeltype == nnsvs.model.MDNv2):
+    elif(len(tensor.size()) == 3):
         one_hot = torch.zeros(
             (
                 1,
@@ -43,7 +43,7 @@ def to_one_hot(tensor, n, fill_with=1.0, lengths=None):
             ),
             dtype=torch.float)
     else:
-        raise Exception("Model type not supported")
+        raise Exception(f"Model not supported")
     if tensor.is_cuda:
         one_hot = one_hot.cuda()
     one_hot.scatter_(len(tensor.size()), tensor.unsqueeze(-1), fill_with)
@@ -139,7 +139,7 @@ def export_model(config:DictConfig, typ:str ,device:str="cpu"):
                 'result':{1:'n_phonemes'}
                 }  
             )
-        print(f'{datetime.now()} : exported {onnx_path}')
+    print(f'{datetime.now()} : exported {onnx_path}')
 
 def export_minmaxscaler(path:str,encoding:str="utf8"):
     #export MinMaxScaler to json, which is c#-readable
